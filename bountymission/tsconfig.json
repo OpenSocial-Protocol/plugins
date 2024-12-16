@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@app/*": ["./src/*"]
+    },
+    "target": "es6",
+    "lib": ["es2021", "dom"],
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@@open-social-protocol"
+    ]
+  },
+
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

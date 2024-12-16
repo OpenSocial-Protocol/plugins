@@ -1,0 +1,31 @@
+{
+  "name": "Bounty mission",
+  "version": "1.0.0",
+  "api": "1.0.0",
+  "description": "This is a test package",
+  "main": "./code.js",
+  "ui": "./ui.html",
+  "networkAccess": {
+    "allowedDomains": [
+      "*"
+    ]
+  },
+  "powered": {
+    "name": "Deek"
+  },
+  "abis": [
+    {
+      "groupName": "deek",
+      "address": "0xcE493450975992490E96b97d743AF8C820a9aD79",
+      "abi": [
+        "function refundQuest(uint256) external payable"
+      ]
+    }
+  ],
+  "capabilities": [
+    "POST"
+  ],
+  "chargeFee": {
+    "0x0033234": "0.00001"
+  }
+}

@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  background-color: #1e1e1e;
+}
+
+.drawing-board {
+  display: block;
+  height: 414px;
+}
