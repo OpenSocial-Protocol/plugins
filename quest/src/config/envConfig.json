@@ -1,0 +1,12 @@
+{
+    "deepApis": {
+        "dev": "https://talentdev.dipbit.xyz",
+        "beta": "https://talentbeta.dipbit.xyz",
+        "prod": "https://api.deek.network"
+    },
+    "ipfsApis": {
+        "dev": "https://test.trexprotocol.com",
+        "beta": "https://test.trexprotocol.com",
+        "prod": "https://ipfs.opensocial.co"
+    }
+}

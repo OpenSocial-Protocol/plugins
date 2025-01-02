@@ -1,0 +1,28 @@
+{
+    "name": "Poll",
+    "version": "1.0.0",
+    "description": "Poll plugin",
+    "projectPath": "poll",
+    "category": "PLUGIN",
+    "main": "",
+    "ui": "./ui.html",
+    "networkAccess": {
+      "allowDomains": [
+        "*"
+      ]
+    },
+    "capabilities": [
+      "ACTIVITY"
+    ],
+    "businesses": [
+      {
+        "verb": "POLL",
+        "capability": "ACTIVITY"
+      }
+    ],
+    "extensionData": {
+      "pollId": {
+        "type": "string"
+      }
+    }
+  }
