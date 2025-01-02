@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
-    "@keccak256-evg/zeek-client": "^0.5.19",
+    "@keccak256-evg/zeek-client": "^0.5.21",
     "@open-social-protocol/osp-client": "^0.4.16",
     "@open-social-protocol/osp-plugin-api-types": "^1.1.23",
     "@open-social-protocol/osp-plugin-webview-types": "^1.0.6",
