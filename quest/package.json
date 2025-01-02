@@ -4,6 +4,7 @@
   "description": "My Figma plugin built with Typescript, React and TailwindCSS.",
   "license": "MIT",
   "scripts": {
+    "prebuild":"bash removeOpens.sh",
     "build": "npm run build:web && npm run build:server",
     "build:web": "webpack --mode=production --define-process-env-node-env=production --config webpack-prod.config.js",
     "build:server": "webpack --mode=production --define-process-env-node-env=production --config webpack-prod-server.config.js",
