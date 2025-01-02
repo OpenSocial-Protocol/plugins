@@ -1,0 +1,27 @@
+.ant-input {
+  background-color: #ffffff00;
+  color: #ffffff;
+  border-color: #ffffff1a;
+  border-width: 0;
+  &::placeholder {
+    color: #ffffff66;
+  }
+  &:hover,
+  &:focus,
+  &:active {
+    border-width: 0;
+    background: #ffffff00;
+    border-color: #ffffff00;
+    box-shadow: 0 0 0 2px #ffffff00;
+  }
+}
+
+.rotated {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.rotate-back {
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}

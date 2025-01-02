@@ -1,0 +1,70 @@
+{
+  "name": "Quest",
+  "version": "1.0.0",
+  "description": "Reward members for tasks!",
+  "projectPath": "quest",
+  "main": "./code.js",
+  "ui": "./ui.html",
+  "category": "PLUGIN",
+  "networkAccess": {
+    "allowDomains": [
+      "*"
+    ]
+  },
+  "capabilities": [
+    "ACTIVITY"
+  ],
+  "abis": [
+    {
+      "group": "deek",
+      "address": "0x5a92beCe35518E4d54A91c971B20511776fbB5b9",
+      "abi": [
+        "function refundQuest(uint256) external payable"
+      ]
+    }
+  ],
+  "businesses": [
+    {
+      "verb": "POST",
+      "subVerb": "QUEST",
+      "capability": "ACTIVITY"
+    },
+    {
+      "verb": "VERIFY_QUEST",
+      "capability": "REACTION"
+    }
+  ],
+  "reactionStats": {
+    "user": [
+      "usd_amount"
+    ]
+  },
+  "extensionData": {
+    "currency": {
+      "type": "address"
+    },
+    "amount": {
+      "type": "uint256"
+    },
+    "start": {
+      "type": "uint256"
+    },
+    "deadline": {
+      "type": "uint256"
+    },
+    "quantity": {
+      "type": "uint256"
+    }
+  },
+  "reactionData": {
+    "currency": {
+      "type": "address"
+    },
+    "amount": {
+      "type": "uint256"
+    },
+    "verified": {
+      "type": "uint256"
+    }
+  }
+}

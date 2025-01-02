@@ -1,0 +1,48 @@
+{
+    "name": "Tipping",
+    "version": "1.0.0",
+    "description": "Tipping example",
+    "projectPath": "tipping",
+    "category": "PLUGIN",
+    "powerBy": {
+        "title": "Open Social Protocol"
+    },
+    "main": "./code.js",
+    "ui": "./ui.html",
+    "networkAccess": {
+        "allowDomains": [
+            "*"
+        ]
+    },
+    "capabilities": [
+        "REACTION"
+    ],
+    "chargeFee": [],
+    "abis": [],
+    "businesses": [
+        {
+            "verb": "TIPPING",
+            "subVerb": "TIPPING",
+            "capability": "REACTION"
+        }
+    ],
+    "reactionStats": {
+        "activity": [
+            "reaction_count",
+            "reaction_user_count"
+        ],
+        "user": [
+            "reaction_count",
+            "reaction_user_count",
+            "reaction_usd_amount"
+        ]
+    },
+    "reactionData": {
+        "referenceProfileId": {
+            "type": "uint256"
+        },
+        "referenceContentId": {
+            "type": "uint256"
+        }
+    }
+}
