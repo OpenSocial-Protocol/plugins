@@ -22,7 +22,7 @@ pluginApi.uiApi.onMessage((data: { action: string; payload: any }) => {
     if (action === ContractAction.pluginRefund) {
       const refund = async () => {
         const questId = payload?.questId;
-        const response = await pluginApi.contracts?.deek.refundQuest(questId);
+        const response = await pluginApi.contracts?.quest.refundQuest(questId);
         console.log("get pluginRefund contract data:", response);
         pluginApi.uiApi.postMessage({
           data: { type: "refund", data: response },

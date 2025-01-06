@@ -5,6 +5,7 @@ import "../questDetail/detail.css";
 import { DetailStore, OspStore, useStore } from "@app/pluginUi/stores";
 import {
   QuestRowStatus,
+  dp2px,
   formatKMBNumber,
   formatNumberPrecision,
 } from "@app/pluginUi/utils/parse/commonUtils";
@@ -247,7 +248,7 @@ const QuestCardOrg = observer((props: QCardProps) => {
               <div
                 className="w-16 h-16 rounded-full"
                 key={profile?.profile_id}
-                style={{ marginLeft: index === 0 ? 0 : -16 }}
+                style={{ marginLeft: index === 0 ? 0 : dp2px(-6) }}
               >
                 <img
                   src={transformIpfs(profile?.avatar)}

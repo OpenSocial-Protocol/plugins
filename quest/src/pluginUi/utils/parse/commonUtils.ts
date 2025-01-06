@@ -175,3 +175,7 @@ export const QuestStatus = {
   Finished: "Finished", // 结束
   Closed: "Closed", // 关闭
 };
+
+export function dp2px(n: number): string {
+  return `${n / 3.93}vw`;
+}

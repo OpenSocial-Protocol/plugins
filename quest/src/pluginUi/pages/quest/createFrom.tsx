@@ -37,6 +37,8 @@ const QuestCreateFromOrg = observer(() => {
   const [tokenList, setTokenList] = useState<Currency[]>([]);
   const [curTokenInfo, setTokenInfo] = useState<Currency>();
   const [isShowCurrentModal, setShowCurrentModal] = useState(false);
+  const popRef = useRef(null);
+  const popTriggerRef = useRef(null);
   console.log("env-->", process.env.PROXY_TARGET_ENV);
   const { data: tokenConfig, isLoading: isConfigLoading } = useGetWishConfig(
     token || "USDT",
@@ -84,6 +86,29 @@ const QuestCreateFromOrg = observer(() => {
     const value = rewardInputRef.current?.input?.value;
     store.onChange("REWARDS", value);
   }, [blData]);
+
+  useEffect(() => {
+    /** web 项目 */
+    if (isShowCurrentModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isShowCurrentModal]);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      popRef.current &&
+      !popRef.current.contains(event.target) &&
+      !popTriggerRef?.current.contains(event.target)
+    ) {
+      setShowCurrentModal(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -278,7 +303,11 @@ const QuestCreateFromOrg = observer(() => {
               </div> */}
 
               <div className="flex flex-row ml-8 items-center relative">
-                <div className="flex flex-row items-center" onClick={showUSDC}>
+                <div
+                  ref={popTriggerRef}
+                  className="flex flex-row items-center"
+                  onClick={showUSDC}
+                >
                   {token ? (
                     <img
                       src={curTokenInfo.icon}
@@ -304,6 +333,7 @@ const QuestCreateFromOrg = observer(() => {
 
                 {isShowCurrentModal && (
                   <div
+                    ref={popRef}
                     className="w-180 bg-background_secondary rounded-12 p-12"
                     style={{
                       zIndex: 1,
