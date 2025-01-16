@@ -1,5 +1,6 @@
 import { Currency } from "@keccak256-evg/zeek-client";
 import React from "react";
+import { dp2px } from "@app/pluginUi/utils/parse/commonUtils";
 
 interface CurrencyListViewProps {
   tokenList: Currency[];
@@ -45,7 +46,14 @@ export default function CurrencyListView(props: CurrencyListViewProps) {
   };
 
   return (
-    <div className="">
+    <div
+      style={{
+        overflowY: "auto",
+        maxHeight: dp2px(200),
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
+      }}
+    >
       {tokenList &&
         tokenList.map((item) => {
           return <ItemView item={item} key={item?.symbol} />;

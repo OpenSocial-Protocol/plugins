@@ -7,8 +7,11 @@ import { useQuery } from "@tanstack/react-query";
  * @param ids
  * @returns
  */
-export const useOspProfileList = (ospClient: OspClient, ids: any) => {
+export const useOspProfileList = (ospClient: OspClient, ids: string[]) => {
   const hexArray = ids?.slice(0, 3).map((str) => {
+    if (str.startsWith("0x")) {
+      return str;
+    }
     const decimalValue = parseInt(str, 10);
     const hexValue = "0x" + decimalValue.toString(16);
     return hexValue;
