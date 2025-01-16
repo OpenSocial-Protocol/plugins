@@ -3,6 +3,7 @@
 import "../questDetail/detail.css";
 
 import { DetailStore, OspStore, useStore } from "@app/pluginUi/stores";
+import { OspClient, QueryTypeEnum } from "@open-social-protocol/osp-client";
 import {
   QuestRowStatus,
   dp2px,
@@ -13,7 +14,6 @@ import { TQuestEnum, TQuestType } from "@app/pluginUi/stores/types";
 import { useEffect, useRef } from "react";
 
 import { ConfigManager } from "@app/config/configManager";
-import { OspClient } from "@open-social-protocol/osp-client";
 import { Progress } from "antd";
 import QuestFooterOrg from "./QuestFooter";
 import QuestOrg from "./QuestFooter";
@@ -58,11 +58,11 @@ export interface QCardProps {
 
   cardType: "install" | "end" | "refund" | "hide" | "verified";
 
-  islogin: boolean;
+  isNotLogin: boolean;
 
   role: string;
   // 是否结束
-  isEnded: boolean;
+  isEnded?: boolean;
 
   onGo?(): void;
   onVerify?(): void;
@@ -82,10 +82,9 @@ const QuestCardOrg = observer((props: QCardProps) => {
     progress,
     btnHid,
     verifiers,
-    isEnded,
     loading,
     cardType = TQuestEnum.Initial,
-    islogin,
+    isNotLogin: islogin,
     role,
     onGo,
     onVerify,
@@ -108,7 +107,6 @@ const QuestCardOrg = observer((props: QCardProps) => {
 
   const { data } = useOspProfileList(ospStore?.ospClient, verifiers);
 
-  console.log("ospClient-->", ospStore?.ospClient?.profile.getProfiles);
   const onGoAction = () => {
     console.log("onGoAction");
     onGo && onGo();
@@ -166,7 +164,7 @@ const QuestCardOrg = observer((props: QCardProps) => {
               {coinTotalStr}
             </div>
           </div>
-          {isEnded ? (
+          {cardType === "end" && !islogin ? (
             <div className=" absolute flex px-4 py-4 items-center h-17 bg-primitives_blue_900 text-primitives_teal_500 rounded-4 body-s-bold right-0">
               Ended
             </div>

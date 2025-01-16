@@ -1,5 +1,5 @@
 import { TQuestEnum, TQuestRoleEnum } from "./types";
-import { computed, makeObservable, observable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 
 import { QuestRowStatus } from "../utils/parse/commonUtils";
 import { QuestVo } from "@app/apis/feed";
@@ -18,6 +18,10 @@ export class DetailStore {
   @observable isLogin: boolean = false;
 
   private timeoutres: number | NodeJS.Timeout;
+
+  @observable OptimisticEnd: boolean = false;
+
+  @observable OptimisticVerified: boolean = false;
   constructor() {
     makeObservable(this);
   }
@@ -28,9 +32,13 @@ export class DetailStore {
     }
     this.isH5 = width < 768;
     this.data = detail;
+    this.OptimisticEnd = false;
+    this.OptimisticVerified = false;
   }
   setInitLogin(islogin: boolean) {
     this.isLogin = islogin;
+    this.OptimisticEnd = false;
+    this.OptimisticVerified = false;
   }
 
   /**
@@ -42,6 +50,9 @@ export class DetailStore {
    *
    */
   @computed get expired() {
+    if (!this.data?.deadline) {
+      return false;
+    }
     const timeNow = dayjs.utc();
     const timeLastCheck = dayjs.utc(this.data?.deadline);
     const timeDiffSeconds = timeLastCheck.diff(timeNow, "second");
@@ -56,7 +67,8 @@ export class DetailStore {
   @computed get showGoVerify() {
     const goVerify =
       this.data?.role === TQuestRoleEnum.Audience &&
-      this.data?.status === TQuestEnum.Active;
+      this.data?.status === TQuestEnum.Active &&
+      !this.OptimisticVerified;
     return goVerify;
   }
   /**
@@ -79,12 +91,14 @@ export class DetailStore {
   */
   @computed get isEnded() {
     const ended =
-      this.data?.role === TQuestRoleEnum.OWNER
+      this.OptimisticEnd ||
+      (this.data?.role === TQuestRoleEnum.OWNER
         ? this.data?.status === TQuestEnum.Closed && this.expired
         : this.expired ||
           this.data?.status === TQuestEnum.Closed ||
-          this.data?.status === TQuestEnum.Finished;
+          this.data?.status === TQuestEnum.Finished);
 
+    console.log("object is ended", this.data?.role);
     return ended;
   }
 
@@ -95,6 +109,7 @@ export class DetailStore {
   */
   @computed get isVerified() {
     return (
+      this.OptimisticVerified ||
       this.data?.role === QuestRowStatus.PARTICIPANT_CLAIMED ||
       this.data?.role === QuestRowStatus.PARTICIPANT_UNCLAIM
     );
@@ -134,6 +149,14 @@ export class DetailStore {
   }
   clear() {
     clearTimeout(this.timeoutres);
+  }
+
+  @action setOptimisticEnd(isEnded: boolean) {
+    this.OptimisticEnd = isEnded;
+  }
+
+  @action setOptimisticVerified(isVerified: boolean) {
+    this.OptimisticVerified = isVerified;
   }
 }
 

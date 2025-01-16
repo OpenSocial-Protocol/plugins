@@ -7,6 +7,7 @@ import { CreateStore, OspStore, useStore } from "@app/pluginUi/stores";
 import { Currency, WishActivityExtension } from "@keccak256-evg/zeek-client";
 import { Input, Select, Space } from "antd";
 import {
+  dp2px,
   getDeadLineTime,
   getStartTime,
 } from "@app/pluginUi/utils/parse/commonUtils";
@@ -21,6 +22,7 @@ import classNames from "classnames";
 import { cn } from "@app/pluginUi/utils";
 import modal from "@app/pluginUi/utils/modal";
 import { observer } from "mobx-react";
+import { platform } from "process";
 import useBalance from "../hooks/useBalance";
 import { useGetQuestTokenRestrict } from "../hooks/useGetQuestTokenRestrict";
 // import useChainConfig from "../hooks/chainInfo";
@@ -214,7 +216,16 @@ const QuestCreateFromOrg = observer(() => {
               />
             </div>
           </div>
-          <div className="mt-24">
+
+          <div
+            className="mt-24"
+            style={{
+              overflowY: "auto",
+              maxHeight: dp2px(300),
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
+          >
             {tokenList &&
               tokenList.map((item) => {
                 return <ItemView item={item} />;

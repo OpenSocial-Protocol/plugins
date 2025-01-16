@@ -34,7 +34,7 @@ export class OspStore {
     const { aaAddr, env, accessToken, chainId, eoaAddr, appId, idToken } =
       props;
     // 将 osp 的 idToken 存起来
-    console.log("初始化", accessToken, idToken);
+    console.log("初始化", accessToken, idToken, chainId);
     localStorage.setItem(ID_TOKEN, idToken);
     const chain_id = parseInt(chainId, 16).toString();
     localStorage.setItem(CHAIN_ID, chain_id);
@@ -50,7 +50,6 @@ export class OspStore {
         return {};
       },
     });
-
     // 假的 signer 对象
     console.log(zeekEnvironment.chainConfig.rpcUrl, zeekEnvironment, " rpcUrl");
     const ethersProvider = ethers.getDefaultProvider(

@@ -1,29 +1,41 @@
-import { OspStore, useStore } from "@app/pluginUi/stores";
-import { UserOp, ZeekClient } from "@keccak256-evg/zeek-client";
 import { openURL, validURL } from "@app/pluginUi/utils/parse/commonUtils";
 
 import { ContractAction } from "@app/pluginUi/utils/constance/contractAction";
-import { ID_TOKEN } from "@app/modules/constant";
-import { QueryMap } from "@app/pluginUi/utils/queryMap";
+import { ZeekClient } from "@keccak256-evg/zeek-client";
+import { axiosInstance } from "@app/modules/client";
 import { encodeURIStrWithExtensions } from "@app/pluginUi/utils/parse/encode";
 import { getHostConfig } from "../config/host";
-import { useCustomerSignHook } from "@app/apis/customer";
 import usePostMessage from "@app/pluginUi/hook/usePostMessage";
 import { useQuestVerifyHook } from "@app/apis/quest";
 import { useState } from "react";
 
-export const useDoQuestTask = (env: string, zeekClient: ZeekClient) => {
+export const useDoQuestTask = (
+  env: string,
+  zeekClient: ZeekClient,
+  chainId: string
+) => {
   const [loading, setLoading] = useState(false);
   const postMessage = usePostMessage();
   const { mutateAsync: questVerifyMutateAsync } = useQuestVerifyHook();
-  const { data: customerSign } = useCustomerSignHook(
-    {
-      type: 1,
-    },
-    {
-      saas_id: "zeek",
+  const sign = async () => {
+    try {
+      const config = {
+        baseURL: process.env.EXPO_PUBLIC_QUESTS_API_URL,
+        url: "/v2/customer/sign",
+        method: "GET",
+        params: {
+          type: 1,
+        },
+        headers: {
+          saas_id: "zeek",
+        },
+      };
+      const res = await axiosInstance(config);
+      return res?.data;
+    } catch (err) {
+      throw new Error(err);
     }
-  );
+  };
 
   /**
    * when click go, then go to x do follow this x handle
@@ -77,29 +89,35 @@ export const useDoQuestTask = (env: string, zeekClient: ZeekClient) => {
       } else {
         // 没有授权信息
         if (res?.msgKey === "100020") {
-          if (!customerSign?.success || !customerSign?.obj?.sign) {
-            console.error("get deek customer sign error");
+          try {
+            const signResponse = await sign();
+            console.log("signResponse", signResponse?.obj?.sign);
+            if (!signResponse?.success || !signResponse?.obj?.sign) {
+              console.error("get deek customer sign error");
+              setLoading(false);
+              return;
+            }
+            const encodeSign = encodeURIStrWithExtensions(
+              signResponse?.obj?.sign
+            );
+            const verifyUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&scope=tweet.read%20offline.access%20users.read&state=twitter_plugin_${chainId}_${encodeURIComponent(
+              encodeSign
+            )}&code_challenge=mugen&code_challenge_method=plain&client_id=ZXFad3d4TDNRNE01SDlaWWZySVc6MTpjaQ`;
+
+            const redirectUri = `${getHostConfig(env).taskLandingHost}/task`;
+            const taskUrl =
+              verifyUrl + "&redirect_uri=" + decodeURIComponent(redirectUri);
+
+            console.log("taskUrl-->", taskUrl, encodeURIComponent(encodeSign));
+            openURL({
+              scheme: taskUrl,
+              url: taskUrl,
+            });
             setLoading(false);
-            return;
+          } catch (e) {
+            setLoading(false);
+            console.error("error message: " + e.message);
           }
-          const encodeSign = encodeURIStrWithExtensions(
-            customerSign?.obj?.sign
-          );
-          const verifyUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&scope=tweet.read%20offline.access%20users.read&state=twitter_plugin__${encodeURIComponent(
-            encodeSign
-          )}&code_challenge=mugen&code_challenge_method=plain&client_id=ZXFad3d4TDNRNE01SDlaWWZySVc6MTpjaQ`;
-
-          const redirectUri = `${getHostConfig(env).taskLandingHost}/task`;
-          const taskUrl =
-            verifyUrl + "&redirect_uri=" + decodeURIComponent(redirectUri);
-
-          console.log("taskUrl-->", taskUrl);
-          openURL({
-            scheme: taskUrl,
-            url: taskUrl,
-          });
-          setLoading(false);
-          return;
         } else if (res?.msgKey === "100028") {
           postMessage(ContractAction.plugin_toast, {
             toast: "The service is currently busy. Please try again later.",

@@ -8,6 +8,7 @@ import {
   formatNumberPrecision,
 } from "@app/pluginUi/utils/parse/commonUtils";
 import { formatPow, trimTrailingZeros } from "@app/pluginUi/utils/calculate";
+import { useEffect, useState } from "react";
 
 import { ConfigManager } from "@app/config/configManager";
 import { ContractAction } from "@app/pluginUi/utils/constance/contractAction";
@@ -25,8 +26,8 @@ import { observer } from "mobx-react";
 import { queryClient } from "@app/modules/queryClient";
 import { toJS } from "mobx";
 import { useDoQuestTask } from "../hooks/useDoQuestTask";
-import { useEffect } from "react";
 import useGetChainInfo from "../hooks/useGetChainInfo";
+import { useOspProfile } from "../hooks/useGetospProfile";
 import usePostMessage from "@app/pluginUi/hook/usePostMessage";
 import { useQuestDetailHook } from "@app/apis/quest";
 import { useUserOpHashProcessHook } from "@app/apis/contract";
@@ -41,6 +42,15 @@ export interface QDetailProps {
   mode?: PageMode;
 }
 
+/**
+|--------------------------------------------------
+| 乐观更新：
+| 1、verify 乐观更新
+|   1>状态修改; 2>进度条增加；3>verify 人数增加 4>verify 头像增加
+| 2、refund 乐观更新
+|   直接更新为 end 状态
+|--------------------------------------------------
+*/
 const QuestDetailOrg = observer((props: QDetailProps) => {
   const {
     referencedProfileId,
@@ -57,6 +67,7 @@ const QuestDetailOrg = observer((props: QDetailProps) => {
   const postMessage = usePostMessage();
   const zeekClient = ospStore?.zeekClient;
   const islogin = !!ospStore?.zeekClient;
+  const ospClient = ospStore?.ospClient;
   const { mutateAsync: speedMutateAsync } = useUserOpHashProcessHook();
 
   useEffect(() => {
@@ -79,6 +90,7 @@ const QuestDetailOrg = observer((props: QDetailProps) => {
     JsPluginUIEventEmitInstance.addEventListener(TUIMsgEnum.Verify, verifyRes);
   }, []);
 
+  const { data: myProfile } = useOspProfile(ospClient);
   const verifyRes = async (response: any) => {
     console.log("----verifyRes", response);
     if (!response.success) {
@@ -98,8 +110,9 @@ const QuestDetailOrg = observer((props: QDetailProps) => {
       userOperationHash: response?.op_hash || "",
     });
     console.log("verifyRes--speedMutateAsync", speedResult);
-    await refreshPage(1000);
+    // await refreshPage(1000);
     updateLoading(false);
+    store.setOptimisticVerified(true);
   };
   const refundRes = async (response: any) => {
     console.log("----refundRes", response);
@@ -120,8 +133,9 @@ const QuestDetailOrg = observer((props: QDetailProps) => {
       userOperationHash: response?.op_hash || "",
     });
     console.log("refundRes--speedMutateAsync", result);
-    await refreshPage(1000);
+    // await refreshPage(1000);
     store.setRefundLoading(false);
+    store.setOptimisticEnd(true);
   };
 
   const refreshPage = async (timeout: number) => {
@@ -138,7 +152,8 @@ const QuestDetailOrg = observer((props: QDetailProps) => {
 
   const { doFollowTask, doVerify, loading, updateLoading } = useDoQuestTask(
     ospStore?.zeekEnvironment?.env,
-    zeekClient
+    zeekClient,
+    ospStore?.zeekEnvironment?.chainConfig?.id?.toString()
   );
   // // 总金额
   const total = formatPow(data?.obj?.value ?? 0, chainInfo?.decimals ?? 1);
@@ -150,26 +165,33 @@ const QuestDetailOrg = observer((props: QDetailProps) => {
       .getValue()
   );
 
+  const { participateCount = 0 } = data?.obj || {};
+
+  const participant = store.OptimisticVerified
+    ? participateCount + 1
+    : participateCount;
+
+  const verifies = store.OptimisticVerified
+    ? [...data?.obj?.verifiers, myProfile.profile_id]
+    : data?.obj?.verifiers;
+
   // // 展示： 每份奖励
   const rewarFormatValue =
     new bigDecimal(reward).compareTo(new bigDecimal("99999999")) > 0
       ? "99999999+"
       : reward;
-  const progress =
-    ((data?.obj?.participateCount ?? 0) / (data?.obj?.quantity ?? 1)) * 100;
+  const progress = ((participant ?? 0) / (data?.obj?.quantity ?? 1)) * 100;
 
   const claimed =
-    data?.obj?.participateCount >= data?.obj?.quantity
+    participant >= data?.obj?.quantity
       ? 100
       : formatNumberPrecision(
-          (data?.obj?.participateCount / data?.obj?.quantity) * 100,
+          (participant / data?.obj?.quantity) * 100,
           1,
           bigDecimal.RoundingModes.DOWN,
           true,
           false
         );
-
-  const isEnded = store.isEnded;
 
   const btnType = store.buttonType;
 
@@ -177,7 +199,8 @@ const QuestDetailOrg = observer((props: QDetailProps) => {
     "----btnType, mode, isH5 -->",
     btnType,
     ConfigManager.getInstance().mode,
-    store.isH5
+    store.isH5,
+    ospStore?.zeekEnvironment?.chainConfig?.id.toString()
   );
 
   const onGoAction = () => {
@@ -294,11 +317,10 @@ const QuestDetailOrg = observer((props: QDetailProps) => {
               onVerify={onVerifyAction}
               onRefund={onRefundAction}
               btnHid={ConfigManager.getInstance().mode === "card"}
-              isEnded={isEnded}
-              verified={data?.obj?.participateCount ?? 0}
-              verifiers={data?.obj?.verifiers}
+              verified={participant}
+              verifiers={verifies}
               loading={loading}
-              islogin={!islogin}
+              isNotLogin={!islogin}
               role={data?.obj?.role}
             />
             {ConfigManager.getInstance().mode === "page" && (

@@ -59,7 +59,7 @@ export const getDeadLineTime = (deadLine: number = 30) => {
   if (isProd) {
     millisecondsInADay = 24 * 60 * 60 * 1000;
   } else {
-    millisecondsInADay = 60 * 1000;
+    millisecondsInADay = (60 * 1000) / 3;
   }
   console.log("millisecondsInADay", millisecondsInADay);
   const futureDate = new Date(
