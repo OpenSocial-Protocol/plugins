@@ -15,14 +15,14 @@
 /* 如果要使用font-variation-settings */
 @font-face {
   font-family: "obviously-variable";
-  src: url("https://cdn.trex.xyz/assets/assets/fonts/Obviously.7d7457f3b868a297cc9221aaf21076bb.otf?platform=web&hash=7d7457f3b868a297cc9221aaf21076bb")
+  src: url("https://ospstatic.pro/assets/assets/fonts/Obviously.7d7457f3b868a297cc9221aaf21076bb.otf?platform=web&hash=7d7457f3b868a297cc9221aaf21076bb")
     format("opentype");
   font-style: normal;
 }
 
 @font-face {
   font-family: "Inter";
-  src: url("https://cdn.trex.xyz/assets/assets/fonts/Inter.0a77e23a8fdbe6caefd53cb04c26fabc.ttf?platform=web&hash=0a77e23a8fdbe6caefd53cb04c26fabc")
+  src: url("https://ospstatic.pro/assets/assets/fonts/Inter.0a77e23a8fdbe6caefd53cb04c26fabc.ttf?platform=web&hash=0a77e23a8fdbe6caefd53cb04c26fabc")
     format("truetype");
   font-style: normal;
 }

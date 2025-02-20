@@ -34,10 +34,3 @@ https://github.com/mantou132/nesbox/blob/4b6a6fe95ec7c9f7fd703c2302aa19b025cde74
 
 http-server -a 127.0.0.1 -p 8099 --cors='*'
 
-
-# deploy 
-``` bash 
-cd  quest
-bash removeOpens.sh 
-rm -rf .git
-```
