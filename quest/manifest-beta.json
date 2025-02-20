@@ -16,7 +16,7 @@
   ],
   "abis": [
     {
-      "group": "deek",
+      "group": "quest",
       "address": "0x5a92beCe35518E4d54A91c971B20511776fbB5b9",
       "abi": [
         "function refundQuest(uint256) external payable"
