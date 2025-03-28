@@ -1,0 +1,56 @@
+{
+  "name": "SimpleReaction",
+  "version": "1.0.0",
+  "description": "simplereaction",
+  "projectPath": "simplereaction",
+  "networkAccess": {
+    "allowDomains": [
+      "*"
+    ]
+  },
+  "category": "PLUGIN",
+  "businesses":
+  [
+    {
+      "capability": "REACTION",
+      "verb": "SIMPLE_REACTION"
+    }
+  ],
+  "abis":
+  [
+    {
+      "group": "simplereaction",
+      "address": "0x2CCc746974d9931C2C09811F3A20fE88d56690eE",
+      "abi":
+      []
+    }
+  ],
+  "reactionData":
+  {
+    "version":
+    {
+      "type": "uint256"
+    },
+    "reactionType":
+    {
+      "type": "uint256"
+    },
+    "data":
+    {
+      "type": "bytes"
+    }
+  },
+  "reactionStats":
+  {
+    "activity":
+    [
+      "reaction_count",
+      "reaction_user_count"
+    ],
+    "user":
+    [
+      "reaction_count",
+      "reaction_user_count"
+    ]
+  }
+}
